@@ -11,8 +11,9 @@ export const navItems = [
 export type NavItem = (typeof navItems)[number];
 
 export type User = {
-    name: 'string',
-    identifier: 'string',
+    userId: string
+    name: string,
+    identifier: string,
 }
 
 export type VerifyResponse = {

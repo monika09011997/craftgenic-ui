@@ -50,11 +50,14 @@ export const cartSlice = createSlice({
         state.items = state.items.filter(item => item.id !== action.payload);
       }
     },
+    clearCart: (state) => {
+    state.items = [];
+  },
   },
 });
 
 // Export the actions
-export const { addItem, removeItem, incrementQuantity, decrementQuantity } = cartSlice.actions;
+export const { addItem, removeItem, incrementQuantity, decrementQuantity, clearCart } = cartSlice.actions;
 
 // --- Selectors ---
 // Selectors are used to efficiently get data from the store

@@ -4,9 +4,11 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { useCallback, useState } from 'react';
 import { OptionButton } from "../../../common/components/buttons/OptionButton";
-import { Favorite } from "@mui/icons-material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { addItem } from "../../../cart/slice";
 import { ScrollableThumbnails } from "../../../common/components/ScrollableThumbnails";
+import { useCartAnimation } from "../../../home/hooks";
+import { selectIsinWishlist, toggleWishlistItem } from "../../../wishlist/WishlistSlice";
 
 export const ProductOverview = () => {
   // Get the 'id' from the URL, e.g., /product/123
@@ -19,32 +21,43 @@ export const ProductOverview = () => {
   const frameOptions = ['No Frame', 'Gallery Wrap',
     'Black', 'White', 'Natural Wood'];
 
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+  const { triggerAnimation } = useCartAnimation();
+
+   // Check if the current product is in the wishlist
+  const isInWishlist = useAppSelector(selectIsinWishlist(selectedProduct?.id || ''));
+
+  const handleToggleWishlist = () => {
+    if (selectedProduct) {
+      dispatch(toggleWishlistItem(selectedProduct));
+    }
+  };
 
 
   const handleAddToCart = useCallback(() => {
     if (!selectedProduct) return; // Guard clause
 
-      const itemToAdd = {
-    ...selectedProduct, // Copy all original product properties
-    selectedSize: selectedSize,   // Add the selected size from state
-    selectedFrame: selectedFrame, // Add the selected frame from state
-    // Generate a unique ID for the cart item if size/frame change it
-      }
-    
+    const itemToAdd = {
+      ...selectedProduct, // Copy all original product properties
+      selectedSize: selectedSize,   // Add the selected size from state
+      selectedFrame: selectedFrame, // Add the selected frame from state
+      // Generate a unique ID for the cart item if size/frame change it
+    }
+
     // Implement your add to cart logic here
-      dispatch(addItem(itemToAdd));
+    dispatch(addItem(itemToAdd));
+    triggerAnimation('add-to-cart-button');
 
   }, [selectedProduct]); // The dependency is the product from the state
 
   const handleWishlist = useCallback(() => {
     if (!selectedProduct) return; // Guard clause
-    
+
     // Implement your add to wishlist logic here
     alert(`Added ${selectedProduct.name} to wishlist!`);
   }, [selectedProduct]); // The dependency is the product from the state
 
-   // This is the specific logic that the parent component wants to run
+  // This is the specific logic that the parent component wants to run
   const handleImageSelect = (imageUrl: string) => {
     console.log(`Thumbnail clicked: ${imageUrl}`);
     setSelectedImage(imageUrl);
@@ -73,12 +86,12 @@ export const ProductOverview = () => {
 
             {/* Horizontal Scrollable Thumbnails */}
             {selectedProduct?.imageGallery && selectedProduct.imageGallery.length > 1 && (
-             <ScrollableThumbnails
-            imageGallery={selectedProduct.imageGallery}
-            selectedImage={selectedImage}
-            onThumbnailClick={handleImageSelect}
-            canClick={true}
-      />
+              <ScrollableThumbnails
+                imageGallery={selectedProduct.imageGallery}
+                selectedImage={selectedImage}
+                onThumbnailClick={handleImageSelect}
+                canClick={true}
+              />
             )}
           </Stack>
         </Grid>
@@ -87,17 +100,17 @@ export const ProductOverview = () => {
         <Grid width={'50%'} sx={{ xs: 12, sm: 6 }}>
           <Stack spacing={2.5}>
             <Box>
-              <Chip label="10% OFF" size="small" sx={{ mb: 1, color: 'white', bgcolor: 'black'}}/>
+              <Chip label="10% OFF" size="small" sx={{ mb: 1, color: 'white', bgcolor: 'black' }} />
               <Typography variant="h4" fontWeight={600}>{selectedProduct?.name}</Typography>
               <Typography variant="body1" color="text.secondary">Type: {selectedProduct?.category}</Typography>
             </Box>
 
-            { selectedProduct?.price &&
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="h5" color="black" fontWeight={700}>Rs. {selectedProduct?.price.toLocaleString()}</Typography>
-              <Typography variant="h6" color="text.disabled" sx={{ textDecoration: 'line-through' }}>{(selectedProduct?.price * 1.4).toLocaleString()}</Typography>
-            </Stack>
-    }
+            {selectedProduct?.price &&
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography variant="h5" color="black" fontWeight={700}>Rs. {selectedProduct?.price.toLocaleString()}</Typography>
+                <Typography variant="h6" color="text.disabled" sx={{ textDecoration: 'line-through' }}>{(selectedProduct?.price * 1.4).toLocaleString()}</Typography>
+              </Stack>
+            }
 
             <Box>
               <Typography variant="subtitle1" fontWeight={500} gutterBottom>Size (In Inches): {selectedSize}</Typography>
@@ -111,9 +124,9 @@ export const ProductOverview = () => {
             <Box>
               <Typography variant="subtitle1" fontWeight={500} gutterBottom>Floating Frame: {selectedFrame}</Typography>
               <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                 {frameOptions.map(frame => (
+                {frameOptions.map(frame => (
                   <OptionButton key={frame} label={frame} selected={selectedFrame === frame} onClick={() => setSelectedFrame(frame)} />
-                 ))}
+                ))}
               </Stack>
             </Box>
 
@@ -123,20 +136,36 @@ export const ProductOverview = () => {
               {selectedProduct?.rating && <Rating name="read-only" value={selectedProduct?.rating} precision={0.5} readOnly />}
               <Typography variant="body2" color="text.secondary">(Based on 1,500+ reviews)</Typography>
             </Stack>
-            <Paper variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9', width: '600px' }}>
-               <Typography variant="body2" color="text.secondary" flexWrap="wrap">
+            <Paper variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9'}}>
+              <Typography variant="body2" color="text.secondary" flexWrap="wrap">
                 {selectedProduct?.description}
-               </Typography>
+              </Typography>
             </Paper>
           </Stack>
           <Stack direction="row" spacing={2} mt={3}>
-             <Button variant="outlined"  startIcon={<Favorite />}  onClick={() => alert('Buy now clicked!')} sx={{ width: '30%', py: 1.5, borderColor: '#000', color: '#000', '&:hover': { backgroundColor: '#f0f0f0', borderColor: '#333'} }}>
-              WishList
-            </Button> 
-            <Button variant="contained" startIcon={<AddShoppingCartIcon />} onClick={handleAddToCart} sx={{ width: '70%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' } }}>
+            <Button 
+            variant="outlined" 
+      startIcon={isInWishlist ? <Favorite /> : <FavoriteBorder />}
+            onClick={handleToggleWishlist} 
+            sx={{ 
+              width: '40%', 
+              py: 1.5, 
+              borderColor: '#000', 
+              color: '#000', 
+              '&:hover': { backgroundColor: '#f0f0f0', borderColor: '#333' }
+              }}>
+      {isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+            </Button>
+            <Button
+        id="add-to-cart-button"
+              variant="contained"
+              startIcon={<AddShoppingCartIcon />}
+              onClick={handleAddToCart} // Call the updated handler
+              sx={{ width: '80%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' } }}
+            >
               Add to Cart
-            </Button>           
-            </Stack>
+            </Button>
+          </Stack>
         </Grid>
       </Grid>
     </Box>

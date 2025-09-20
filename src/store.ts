@@ -5,18 +5,20 @@ import storage from 'redux-persist/es/storage'
 import productReducer from './common/productSlice'
 import cartReducer from './cart/slice'
 import userReducer from './common/userSlice'
+import wishlistReducer from './wishlist/WishlistSlice'
 
 const rootReducer = combineReducers({
     product: productReducer,
     cart: cartReducer,
     user: userReducer,
+    wishlist: wishlistReducer,
 })
 
 // Configuration for redux-persist
 const persistConfig = {
   key: 'root',      // The key for the root of the storage
   storage,          // The storage engine (localStorage)
-  whitelist: ['user', 'cart'], // ONLY the 'user' and 'cart' slices will be persisted
+  whitelist: ['user', 'cart', 'product'], // ONLY the 'user' and 'cart' slices will be persisted
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -5,7 +5,9 @@ import { LoginPage } from "./common/login/login";
 import { ArtistContent } from "./common/artists/ArtistContent";
 import { ShoppingPage } from "./cart/ShoppingPage";
 import { AnimatePresence } from "framer-motion";
-import { AnimatePage } from "./common/components/AnimatePage";
+import { AnimatePage } from "./common/components/animations/AnimatePage";
+import { OrderSuccessPage } from "./orders/OrderSuccessPage";
+import { OrderHomePage } from "./orders/OrderHomePage";
 
 
 export const CraftgenicRoutes = () => {
@@ -20,6 +22,8 @@ export const CraftgenicRoutes = () => {
         <Route path="/login" element={<AnimatePage><LoginPage/></AnimatePage>} />
         <Route path="/artists" element={<AnimatePage><ArtistContent/></AnimatePage>} />
         <Route path="/shoppingCart" element={<AnimatePage><ShoppingPage/></AnimatePage>} />
+        <Route path="/order-success" element={<AnimatePage><OrderSuccessPage/></AnimatePage>} />
+        <Route path="/myorders" element={<AnimatePage><OrderHomePage/></AnimatePage>} />
     </Routes>
     </AnimatePresence>
   );

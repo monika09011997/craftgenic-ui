@@ -8,12 +8,35 @@ import { incrementQuantity, decrementQuantity, removeItem, selectCartTotal, sele
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { selectCurrentUser } from "../common/userSlice";
+import { OrderPayload } from "../orders/types";
+import { useCreateOrders } from "../orders/hooks";
 
 // View for when the cart has items
 export const CartWithItems = () => {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector(selectCartItems);
+  const navigate = useNavigate();
   const cartTotal = useAppSelector(selectCartTotal);
+  const user = useAppSelector(selectCurrentUser);
+
+  const { checkout } = useCreateOrders();
+
+  const handleCheckout = async () => {
+  if (!user) {
+    alert('Please log in to check out.');
+    navigate('/login');
+    return;
+  }
+  const orderPayload: OrderPayload = {
+    items: cartItems,
+    totalAmount: cartTotal,
+    userId: user.identifier,
+  }
+console.log(orderPayload)
+  checkout(orderPayload);
+
+}
 
   return (
     <Box sx={{ p: 4, mx: 'auto' }}>
@@ -58,7 +81,7 @@ export const CartWithItems = () => {
 
       <Stack alignItems="flex-end" spacing={2}>
         <Typography variant="h6">Estimated total: <span style={{ fontWeight: 700 }}>Rs. {cartTotal.toLocaleString()}</span></Typography>
-        <Button variant="contained" size="large" sx={{ width: '20%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' }}}>
+        <Button onClick={handleCheckout} variant="contained" size="large" sx={{ width: '20%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' }}}>
           Check out
         </Button>
       </Stack>

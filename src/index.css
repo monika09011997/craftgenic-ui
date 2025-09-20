@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* src/index.css */
+
+.flying-item {
+  position: fixed;
+  z-index: 9999;
+  border-radius: 50%;
+  background-color: #000; /* Or your theme's primary color */
+  transition: all 0.7s cubic-bezier(0.55, 0.055, 0.675, 0.19); /* Easing for a nice arc effect */
+}
