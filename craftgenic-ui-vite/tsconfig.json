@@ -1,7 +1,34 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
-}
+    "compilerOptions": {
+      "target": "ESNext",
+      "useDefineForClassFields": true,
+      "lib": [
+        "DOM",
+        "DOM.Iterable",
+        "ESNext"
+      ],
+      "allowJs": false,
+      /* Bundler-related settings */
+      "module": "ESNext",
+      "moduleResolution": "bundler",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "noEmit": true, // Vite handles the final JavaScript output
+      "jsx": "react-jsx",
+      /* Strictness and Code Quality */
+      "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noFallthroughCasesInSwitch": true,
+      /* Path Aliases (Optional but Recommended) */
+      "paths": {
+        "@/*": [
+          "./src/*"
+        ]
+      }
+    },
+    "include": [
+      "src",
+      "vite.config.ts"
+    ]
+  }
