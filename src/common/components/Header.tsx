@@ -1,7 +1,7 @@
 import { Stack, Badge, Avatar, Menu, MenuItem, ListItemIcon, IconButton } from "@mui/material"; // 1. Import Menu components
 import { useState } from "react";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Favorite, Search, ShoppingCart, Logout, ReceiptLong } from "@mui/icons-material";
+import { Favorite, ShoppingCart, Logout, ReceiptLong } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { useAppSelector, useAppDispatch } from "../../hooks";

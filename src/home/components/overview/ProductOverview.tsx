@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Paper, Stack, Typography, Rating, Chip } from "@mui/material";
-import { useParams } from "react-router-dom";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { useCallback, useState } from 'react';
 import { OptionButton } from "../../../common/components/buttons/OptionButton";
@@ -11,8 +11,6 @@ import { useCartAnimation } from "../../../home/hooks";
 import { selectIsinWishlist, toggleWishlistItem } from "../../../wishlist/WishlistSlice";
 
 export const ProductOverview = () => {
-  // Get the 'id' from the URL, e.g., /product/123
-  const { id } = useParams();
   const selectedProduct = useAppSelector(state => state.product.selectedProduct);
   const [selectedImage, setSelectedImage] = useState(selectedProduct?.imageUrl || '');
   const [selectedSize, setSelectedSize] = useState(selectedProduct?.availableSizes ? selectedProduct.availableSizes[0] : '');
@@ -48,14 +46,7 @@ export const ProductOverview = () => {
     dispatch(addItem(itemToAdd));
     triggerAnimation('add-to-cart-button');
 
-  }, [selectedProduct]); // The dependency is the product from the state
-
-  const handleWishlist = useCallback(() => {
-    if (!selectedProduct) return; // Guard clause
-
-    // Implement your add to wishlist logic here
-    alert(`Added ${selectedProduct.name} to wishlist!`);
-  }, [selectedProduct]); // The dependency is the product from the state
+  }, [dispatch, selectedFrame, selectedProduct, selectedSize, triggerAnimation]); // The dependency is the product from the state
 
   // This is the specific logic that the parent component wants to run
   const handleImageSelect = (imageUrl: string) => {

@@ -1,4 +1,3 @@
-import React from "react";
 import Stack from "@mui/material/Stack";
 import { OfferBanner } from "../common/components/OfferBanner";
 import { Header } from "../common/components/Header";

@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ProductListItem } from '../home/types'
 
 import type { RootState } from '../store'
-import { User } from './types'
 
 // Define a type for the slice state
 interface ProductState {

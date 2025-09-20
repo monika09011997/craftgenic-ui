@@ -1,5 +1,5 @@
-import React from "react";
 import Stack from "@mui/material/Stack";
+
 import { Navigation } from "../components/Navigation";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";

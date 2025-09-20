@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, Container, Grid, IconButton, Stack, TextField, Typography, useTheme, useMediaQuery } from '@mui/material';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
+import { Box, Container, Stack, Typography, useTheme, useMediaQuery } from '@mui/material';
 
 // --- Countdown Timer Component ---
 const CountdownTimer = ({ launchDate }: { launchDate: Date }) => {

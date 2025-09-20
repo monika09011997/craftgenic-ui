@@ -4,7 +4,7 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Box, Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 
 export const ProductFeatures = () => {
 const features = [

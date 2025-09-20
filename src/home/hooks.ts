@@ -12,6 +12,7 @@ export const useFetchProductList = () => {
 
     return {
         productList: hook.data,
+        isProductListLoading: hook.isLoading,
         ...hook
     }
 

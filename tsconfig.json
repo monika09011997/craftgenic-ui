@@ -1,34 +1,28 @@
 {
-    "compilerOptions": {
-      "target": "ESNext",
-      "useDefineForClassFields": true,
-      "lib": [
-        "DOM",
-        "DOM.Iterable",
-        "ESNext"
-      ],
-      "allowJs": false,
-      /* Bundler-related settings */
-      "module": "ESNext",
-      "moduleResolution": "bundler",
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "noEmit": true, // Vite handles the final JavaScript output
-      "jsx": "react-jsx",
-      /* Strictness and Code Quality */
-      "strict": true,
-      "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "noFallthroughCasesInSwitch": true,
-      /* Path Aliases (Optional but Recommended) */
-      "paths": {
-        "@/*": [
-          "./src/*"
-        ]
-      }
-    },
-    "include": [
-      "src",
-      "vite.config.ts"
-    ]
-  }
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx", // This fixes the 'Cannot find namespace JSX' error
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Added for Vite */
+    "types": ["vite/client"] // This helps with Node.js module errors
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

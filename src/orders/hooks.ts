@@ -41,7 +41,7 @@ export const useCreateOrders = () => {
     const hook = useMutation({
         mutationFn: (payload: OrderPayload) =>
             createOrder(payload),
-        onSuccess: (data) => {
+        onSuccess: () => {
             dispatch(clearCart());
             navigate(`/order-success`);
         },

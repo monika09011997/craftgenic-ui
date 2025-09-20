@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, IconButton, Paper, Stack, Typography, Link } from "@mui/material";
+import { Avatar, Box, Grid, IconButton, Stack, Typography, Link } from "@mui/material";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { LinkedIn } from "@mui/icons-material";
 import MonikaImage from '../../assets/artist_monika.jpeg';

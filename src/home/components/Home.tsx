@@ -1,4 +1,3 @@
-import React from "react";
 import Stack from "@mui/material/Stack";
 import { Header } from "../../common/components/Header";
 import { Navigation } from "../../common/components/Navigation";

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Box, Button, Paper, Stack, TextField, Typography, CircularProgress } from '@mui/material';
-import axios from 'axios';
 import { Logo } from '../components/Logo';
 import { useRequestOtp, useVerifyOtp } from '../hooks';
 import { useSnackbar } from 'notistack';
