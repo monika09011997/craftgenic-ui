@@ -48,5 +48,17 @@
     "vite": "^7.1.6",
     "@types/axios": "^0.9.36",
     "@types/luxon": "^3.7.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
