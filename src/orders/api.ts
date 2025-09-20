@@ -1,15 +1,17 @@
+import { apiClient } from "../shared/api";
 import { Order, OrderPayload, OrderResponse } from "./types";
-import axios from "axios";
 
 
 export const fetchOrders = async (userId: string ): Promise<Order[]> => {
  try {
-        const response = await axios.get<Order[]>(
+        const response = await apiClient.get<Order[]>(
             `/api/orders/${userId}`
         );
         return response.data;
     } catch (error) {
-        throw error;
+        // Here, we are doing something useful with the error.
+        console.error("Failed to fetch products:", error); 
+        throw error; // Then we re-throw it.
     }
 };
 
@@ -19,7 +21,7 @@ export const createOrder = async (orderPayload: OrderPayload): Promise<OrderResp
     try {
         console.log('2. About to make axios.post request to /api/orders/create');
         
-        const response = await axios.post<OrderResponse>(
+        const response = await apiClient.post<OrderResponse>(
             "/api/orders/create", 
             orderPayload
         );

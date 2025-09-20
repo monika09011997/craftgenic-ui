@@ -53,7 +53,7 @@ export const HomeProductCatalog = () => {
     navigate(`/product/${encodedId}`);
   };
 
-  if (isProductListLoading) {
+  if (productList) {
     return (
       <Box sx={{ padding: 3 }}>
         <Grid container spacing={3} justifyContent="center"> {/* Reduced spacing */}
