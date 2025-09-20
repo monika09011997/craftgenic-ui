@@ -5,7 +5,7 @@ import axios from "axios";
 export const fetchOrders = async (userId: string ): Promise<Order[]> => {
  try {
         const response = await axios.get<Order[]>(
-            `http://localhost:5001/api/orders/${userId}`
+            `/api/orders/${userId}`
         );
         return response.data;
     } catch (error) {
@@ -20,7 +20,7 @@ export const createOrder = async (orderPayload: OrderPayload): Promise<OrderResp
         console.log('2. About to make axios.post request to /api/orders/create');
         
         const response = await axios.post<OrderResponse>(
-            "http://localhost:5001/api/orders/create", 
+            "/api/orders/create", 
             orderPayload
         );
         
