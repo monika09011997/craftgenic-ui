@@ -15,14 +15,17 @@ export const Home = () => {
       <Navigation />
 
       {/* Promo Bar with Home Screen Image */}
-<Stack direction={"row"} justifyContent="center" spacing={-2} mr={4.5} mt={3}>
+<Stack 
+direction={"row"} 
+justifyContent="center"
+alignItems={'center'}
+spacing={-2} mr={4.5} mt={3}>
   <img
     src="/images/homescreen1.jpeg"
     alt="Home"
     style={{
       height: "300px",
       width: "600px",
-      alignItems: "center",
       objectFit: "cover",
       transition: "transform 0.5s",
     }}
@@ -33,7 +36,6 @@ export const Home = () => {
     style={{
       height: "300px",
       width: "600px",
-      alignItems: "center",
       objectFit: "cover",
       transition: "transform 0.5s",
     }}
