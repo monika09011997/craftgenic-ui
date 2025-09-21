@@ -21,7 +21,7 @@ justifyContent="center"
 alignItems={'center'}
 spacing={-2} mr={4.5} mt={3}>
   <img
-    src="/images/homescreen1.jpeg"
+    src="src/assets/homescreen1.jpeg"
     alt="Home"
     style={{
       height: "300px",
@@ -31,7 +31,7 @@ spacing={-2} mr={4.5} mt={3}>
     }}
   />
   <img
-    src="/images/homescreen2.jpeg"
+    src="src/assets/homescreen2.jpeg"
     alt="Home"
     style={{
       height: "300px",
