@@ -1,7 +1,6 @@
 import { Avatar, Box, Grid, IconButton, Stack, Typography, Link } from "@mui/material";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { LinkedIn } from "@mui/icons-material";
-import MonikaImage from '../../assets/artist_monika.jpeg';
 import { useFetchProductList } from "../../home/hooks";
 import { useMemo } from "react";
 import { ScrollableThumbnails } from "../components/ScrollableThumbnails";
@@ -13,7 +12,7 @@ const artist = {
   She creates dynamic compositions that invite viewers to interpret their own meanings.
 Her work has been exhibited in galleries and art fairs, She draws inspiration from nature, human experiences, and the complexities of modern life, translating these themes into bold visual statements.
 In addition to her studio practice, She believes in the transformative power of art and its ability to connect people across diverse backgrounds.`,
-  imageUrl: MonikaImage, // URL to a portrait of the artist
+  imageUrl: "/images/artist_monika.jpeg", // URL to a portrait of the artist
   social: {
     instagram: 'https://instagram.com/dorothyfagan',
     linkedIn: 'https://www.linkedin.com/in/monika-kumari-113762168/',

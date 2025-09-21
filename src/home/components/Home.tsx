@@ -1,9 +1,6 @@
 import Stack from "@mui/material/Stack";
 import { Header } from "../../common/components/Header";
 import { Navigation } from "../../common/components/Navigation";
-// Import your home screen image (place it in src/assets/)
-import homeImage1 from "../../assets/homescreen1.jpeg";
-import homeImage2 from "../../assets/homescreen2.jpeg";
 import { HomeProductCatalog } from "./HomeProductCatalog";
 import { Footer } from "../../common/components/Footer";
 import { OfferBanner } from "../../common/components/OfferBanner";
@@ -20,7 +17,7 @@ export const Home = () => {
       {/* Promo Bar with Home Screen Image */}
 <Stack direction={"row"} justifyContent="center" spacing={-2} mr={4.5} mt={3}>
   <img
-    src={homeImage1}
+    src="/images/homescreen1.jpeg"
     alt="Home"
     style={{
       height: "300px",
@@ -31,7 +28,7 @@ export const Home = () => {
     }}
   />
   <img
-    src={homeImage2}
+    src="/images/homescreen2.jpeg"
     alt="Home"
     style={{
       height: "300px",
