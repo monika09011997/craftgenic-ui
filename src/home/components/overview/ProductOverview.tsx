@@ -2,13 +2,14 @@ import { Box, Button, Grid, Paper, Stack, Typography, Rating, Chip } from "@mui/
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { OptionButton } from "../../../common/components/buttons/OptionButton";
-import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import { Favorite, FavoriteBorder, ShoppingCart } from "@mui/icons-material";
 import { addItem } from "../../../cart/slice";
 import { ScrollableThumbnails } from "../../../common/components/ScrollableThumbnails";
 import { useCartAnimation } from "../../../home/hooks";
 import { selectIsinWishlist, toggleWishlistItem } from "../../../wishlist/WishlistSlice";
+import { useNavigate } from "react-router-dom";
 
 export const ProductOverview = () => {
   const selectedProduct = useAppSelector(state => state.product.selectedProduct);
@@ -21,6 +22,20 @@ export const ProductOverview = () => {
 
   const dispatch = useAppDispatch();
   const { triggerAnimation } = useCartAnimation();
+    const navigate = useNavigate(); // 3. Initialize the navigate function
+
+
+    const cartItems = useAppSelector(state => state.cart.items); // Assuming your cart slice is named 'cart' and has an 'items' array
+  
+  // 4. Check if this specific item configuration is already in the cart
+  const isItemInCart = useMemo(() => {
+    if (!selectedProduct) return false;
+    return cartItems.some(item => 
+      item.id === selectedProduct.id &&
+      item.selectedSize === selectedSize &&
+      item.selectedFrame === selectedFrame
+    );
+  }, [cartItems, selectedProduct, selectedSize, selectedFrame]);
 
    // Check if the current product is in the wishlist
   const isInWishlist = useAppSelector(selectIsinWishlist(selectedProduct?.id || ''));
@@ -52,6 +67,10 @@ export const ProductOverview = () => {
   const handleImageSelect = (imageUrl: string) => {
     console.log(`Thumbnail clicked: ${imageUrl}`);
     setSelectedImage(imageUrl);
+  };
+
+    const handleGoToCart = () => {
+    navigate('/shoppingCart'); // Use the path to your shopping cart page
   };
 
 
@@ -147,15 +166,26 @@ export const ProductOverview = () => {
               }}>
       {isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
             </Button>
-            <Button
-        id="add-to-cart-button"
-              variant="contained"
-              startIcon={<AddShoppingCartIcon />}
-              onClick={handleAddToCart} // Call the updated handler
-              sx={{ width: '80%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' } }}
-            >
-              Add to Cart
-            </Button>
+            {isItemInCart ? (
+              <Button
+                variant="outlined"
+                startIcon={<ShoppingCart />}
+                onClick={handleGoToCart}
+                sx={{ width: '80%', py: 1.5, borderColor: '#000', color: '#000', '&:hover': { backgroundColor: '#f0f0f0' } }}
+              >
+                Go to Cart
+              </Button>
+            ) : (
+              <Button
+                id="add-to-cart-button"
+                variant="contained"
+                startIcon={<AddShoppingCartIcon />}
+                onClick={handleAddToCart}
+                sx={{ width: '80%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' } }}
+              >
+                Add to Cart
+              </Button>
+            )}
           </Stack>
         </Grid>
       </Grid>

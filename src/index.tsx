@@ -7,13 +7,23 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
 import { persistor, store } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { SnackbarProvider } from 'notistack';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
       <Provider store={store}>
               <PersistGate loading={null} persistor={persistor}>
     <BrowserRouter>
+     <SnackbarProvider 
+        maxSnack={3} 
+        autoHideDuration={3000} 
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
     <App />
+    </SnackbarProvider>
     </BrowserRouter>
           </PersistGate>
     </Provider>

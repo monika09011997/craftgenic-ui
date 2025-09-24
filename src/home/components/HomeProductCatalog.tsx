@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ProductListItem } from "../types";
 import { useFetchProductList } from "../hooks";
@@ -37,10 +37,20 @@ export const HomeProductCatalog = () => {
     return productList;
   }, [productList, selectedNavItem]);
 
-  // FIX: Check the loading status from your fetch hook, not the memoized list
-  if (isProductListLoading) {
-    return <Typography>Loading products...</Typography>;
-  }
+if (isProductListLoading) {
+  return (
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '80vh' // Adjust height to fit your layout
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+}
 
   const handleProductClick = (product: ProductListItem) => {
     dispatch(setSelectProduct(product));

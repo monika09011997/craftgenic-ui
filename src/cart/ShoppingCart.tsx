@@ -11,6 +11,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { selectCurrentUser } from "../common/userSlice";
 import { OrderPayload } from "../orders/types";
 import { useCreateOrders } from "../orders/hooks";
+import { useSnackbar } from "notistack";
 
 // View for when the cart has items
 export const CartWithItems = () => {
@@ -21,10 +22,12 @@ export const CartWithItems = () => {
   const user = useAppSelector(selectCurrentUser);
 
   const { checkout } = useCreateOrders();
+  const { enqueueSnackbar } = useSnackbar();
+
 
   const handleCheckout = async () => {
   if (!user) {
-    alert('Please log in to check out.');
+    enqueueSnackbar('Please log in to check out.', { variant: 'info' });
     navigate('/login');
     return;
   }
