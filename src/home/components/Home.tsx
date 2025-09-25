@@ -1,4 +1,5 @@
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 import { Header } from "../../common/components/Header";
 import { Navigation } from "../../common/components/Navigation";
 import { HomeProductCatalog } from "./HomeProductCatalog";
@@ -11,44 +12,46 @@ export const Home = () => {
     <Stack>
       <OfferBanner />
       <Header />
-      {/* Navigation */}
       <Navigation />
 
-      {/* Promo Bar with Home Screen Image */}
-<Stack 
-direction={"row"} 
-justifyContent="center"
-alignItems={'center'}
-spacing={-2} mr={4.5} mt={3}>
-  <img
-    src="images/homescreen1.jpeg"
-    alt="Home"
-    style={{
-      height: "300px",
-      width: "600px",
-      objectFit: "cover",
-      transition: "transform 0.5s",
-    }}
-  />
-  <img
-    src="images/homescreen2.jpeg"
-    alt="Home"
-    style={{
-      height: "300px",
-      width: "600px",
-      objectFit: "cover",
-      transition: "transform 0.5s",
-    }}
-  />
-</Stack>
-      {/* Footer can be added here if needed */}
+      <Stack 
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        // 1. Remove spacing on mobile (xs), add it back on desktop (md)
+        sx={{ mt: 3, px: { xs: 0, sm: 0 } }} // No padding on the very smallest screens
+      >
+        <Box
+          component="img"
+          src="/images/homescreen1.jpeg"
+          alt="Home"
+          sx={{
+            objectFit: "cover",
+            // 2. Set an explicit, responsive height to force both images to be the same size
+            height: { xs: 180, sm: 250, md: 300 },
+            // 3. Adjust width for zero spacing on mobile (50%)
+            width: { xs: '50%', md: '450px', lg: '600px' },
+          }}
+        />
+        <Box
+          component="img"
+          src="/images/homescreen2.jpeg"
+          alt="Home"
+          sx={{
+            objectFit: "cover",
+            height: { xs: 180, sm: 250, md: 300 }, // Same height as the other image
+            width: { xs: '50%', md: '450px', lg: '600px' },
+          }}
+        />
+      </Stack>
+      
       <Stack alignContent={"center"} justifyContent="center" sx={{ padding: 3 }}>
         <HomeProductCatalog />
-</Stack>
-<Stack>
-  <Footer />
-</Stack>
-
+      </Stack>
+      
+      <Stack>
+        <Footer />
+      </Stack>
     </Stack>
   );
 }

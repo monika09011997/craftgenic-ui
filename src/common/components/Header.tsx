@@ -1,131 +1,154 @@
-import { Stack, Badge, Avatar, Menu, MenuItem, ListItemIcon, IconButton } from "@mui/material"; // 1. Import Menu components
+import { Stack, Badge, Avatar, Menu, MenuItem, ListItemIcon, IconButton, useTheme, useMediaQuery, Box } from "@mui/material";
 import { useState } from "react";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Favorite, ShoppingCart, Logout, ReceiptLong } from "@mui/icons-material";
+import { Favorite, ShoppingCart, Logout, ReceiptLong, Menu as MenuIcon, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { selectCartItemCount } from "../../cart/slice";
-import { selectCurrentUser, logoutUser } from "../userSlice"; // 2. Import logoutUser
+import { selectCurrentUser, logoutUser } from "../userSlice";
 import { selectWishlistItemCount } from "../../wishlist/WishlistSlice";
 import { WishlistDialog } from "../../wishlist/WishlistDialog";
 
 export const Header = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const theme = useTheme();
+
+    // 1. Detect if the screen is mobile-sized
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const user = useAppSelector(selectCurrentUser);
     const totalCartItems = useAppSelector(selectCartItemCount);
+    const wishlistItemCount = useAppSelector(selectWishlistItemCount);
 
-    // 3. State to manage the menu's anchor element
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    // --- State for Menus ---
+    const [desktopAnchorEl, setDesktopAnchorEl] = useState<null | HTMLElement>(null);
+    const [mobileAnchorEl, setMobileAnchorEl] = useState<null | HTMLElement>(null);
+    const [isWishlistOpen, setWishlistOpen] = useState(false);
 
-     const [isWishlistOpen, setWishlistOpen] = useState(false);
-  const wishlistItemCount = useAppSelector(selectWishlistItemCount);
+    const isDesktopMenuOpen = Boolean(desktopAnchorEl);
+    const isMobileMenuOpen = Boolean(mobileAnchorEl);
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    // --- Handlers ---
+    const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>) => setDesktopAnchorEl(event.currentTarget);
+    const handleDesktopMenuClose = () => setDesktopAnchorEl(null);
+    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => setMobileAnchorEl(event.currentTarget);
+    const handleMobileMenuClose = () => setMobileAnchorEl(null);
 
     const handleLogout = () => {
         dispatch(logoutUser());
-        handleClose();
+        handleDesktopMenuClose();
+        handleMobileMenuClose();
         navigate('/home');
     };
+    
+    const handleNavigate = (path: string) => {
+        navigate(path);
+        handleDesktopMenuClose();
+        handleMobileMenuClose();
+    };
+
+    // --- Mobile Menu Component ---
+    const renderMobileMenu = (
+        <Menu anchorEl={mobileAnchorEl} open={isMobileMenuOpen} onClose={handleMobileMenuClose}>
+            {user ? (
+                [
+                    <MenuItem key="orders" onClick={() => handleNavigate('/myOrders')}>
+                        <ListItemIcon><ReceiptLong fontSize="small" /></ListItemIcon>
+                        My Orders
+                    </MenuItem>,
+                    <MenuItem key="wishlist" onClick={() => { setWishlistOpen(true); handleMobileMenuClose(); }}>
+                        <ListItemIcon>
+                            <Badge badgeContent={wishlistItemCount} color="error"><Favorite fontSize="small" /></Badge>
+                        </ListItemIcon>
+                        Wishlist
+                    </MenuItem>,
+                    <MenuItem key="logout" onClick={handleLogout}>
+                        <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
+                        Logout
+                    </MenuItem>
+                ]
+            ) : (
+                <MenuItem onClick={() => handleNavigate('/login')}>
+                    <ListItemIcon><AccountCircle fontSize="small" /></ListItemIcon>
+                    Login / Sign Up
+                </MenuItem>
+            )}
+        </Menu>
+    );
+
+    // --- Desktop Menu Component ---
+    const renderDesktopMenu = (
+        <Menu anchorEl={desktopAnchorEl} open={isDesktopMenuOpen} onClose={handleDesktopMenuClose}>
+            <MenuItem onClick={() => handleNavigate('/myOrders')}>
+                <ListItemIcon><ReceiptLong fontSize="small" /></ListItemIcon>
+                My Orders
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+                <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
+                Logout
+            </MenuItem>
+        </Menu>
+    );
 
     return (
-        <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            mx={3}
-            my={1}
-            sx={{ borderBottom: "1px solid #eee" }}
-        >
-            {/* ... Your Search and Logo sections ... */}
-            <Stack direction="row" alignItems="center" flex={1}>
-                {/* Search logic */}
-            </Stack>
-            <Stack direction="column" alignItems="center" spacing={0.5}>
-                <Logo />
-            </Stack>
-
-            {/* Account & Cart */}
+        <>
             <Stack
                 direction="row"
                 alignItems="center"
-                justifyContent="flex-end"
-                flex={1}
-                spacing={2}
-                mr={3}
+                justifyContent="space-between"
+                sx={{ p: { xs: 1, sm: 2 }, borderBottom: "1px solid #eee" }}
             >
-                {user ? (
-                    // 4. If user is logged in, show Avatar which opens a Menu
-                    <>
-                        <Avatar
-                            sizes="small"
-                            sx={{ bgcolor: 'black', cursor: 'pointer' }}
-                            onClick={handleClick}
-                        >
-                            {user.name.charAt(0).toUpperCase()}
-                        </Avatar>
-                        <Menu
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                        >
-                            <MenuItem onClick={() => { navigate('/myOrders'); handleClose(); }}>
-                                <ListItemIcon><ReceiptLong fontSize="small" /></ListItemIcon>
-                                My Orders
-                            </MenuItem>
-                            <MenuItem onClick={handleLogout}>
-                                <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
-                                Logout
-                            </MenuItem>
-                        </Menu>
-                    </>
-                ) : (
-                    // 5. If logged out, show the login icon
-                    <AccountCircleIcon onClick={() => navigate('/login')} sx={{ cursor: "pointer" }} />
-                )}
+                {/* Left Section */}
+                <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+                    {isMobile && (
+                        <IconButton onClick={handleMobileMenuOpen}>
+                            <MenuIcon />
+                        </IconButton>
+                    )}
+                </Box>
 
-<IconButton onClick={() => setWishlistOpen(true)}>
-          <Badge 
-          badgeContent={wishlistItemCount}
-             sx={{
-      "& .MuiBadge-badge": {
-        color: "white", // Text color of the badge
-        backgroundColor: "black" // Background of the badge
-      }
-    }}
-          >
-            <Favorite sx={{color: 'black'}} />
-          </Badge>
-        </IconButton>
-        
-        <IconButton onClick={() => navigate('/shoppingCart')}>
-                <Badge 
-                badgeContent={totalCartItems} 
-   sx={{
-      "& .MuiBadge-badge": {
-        color: "white", // Text color of the badge
-        backgroundColor: "black" // Background of the badge
-      }
-    }}                >
-                    {/* Add the id="cart-icon" here */}
-                    <ShoppingCart
-                        id="cart-icon"
-                        sx={{ color: 'black' }}
-                    />
-                </Badge>
-                </IconButton>
+                {/* Center Section (Logo) */}
+                <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                    <Logo />
+                </Box>
+
+                {/* Right Section */}
+                <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1} sx={{ flex: 1 }}>
+                    {isMobile ? (
+                        // On Mobile: Only show the cart icon
+                        <IconButton onClick={() => navigate('/shoppingCart')}>
+                            <Badge badgeContent={totalCartItems} color="error">
+                                <ShoppingCart id="cart-icon" sx={{ color: 'black' }} />
+                            </Badge>
+                        </IconButton>
+                    ) : (
+                        // On Desktop: Show user avatar and icons
+                        <>
+                            {user ? (
+                                <Avatar sx={{ bgcolor: 'black', cursor: 'pointer', width: 32, height: 32 }} onClick={handleDesktopMenuOpen}>
+                                    {user.name.charAt(0).toUpperCase()}
+                                </Avatar>
+                            ) : (
+                                <IconButton onClick={() => navigate('/login')}><AccountCircle sx={{ color: 'black' }} /></IconButton>
+                            )}
+                            <IconButton onClick={() => setWishlistOpen(true)}>
+                                <Badge badgeContent={wishlistItemCount} color="error">
+                                    <Favorite sx={{ color: 'black' }} />
+                                </Badge>
+                            </IconButton>
+                            <IconButton onClick={() => navigate('/shoppingCart')}>
+                                <Badge badgeContent={totalCartItems} color="error">
+                                    <ShoppingCart id="cart-icon" sx={{ color: 'black' }} />
+                                </Badge>
+                            </IconButton>
+                        </>
+                    )}
+                </Stack>
             </Stack>
-                  <WishlistDialog open={isWishlistOpen} onClose={() => setWishlistOpen(false)} />
-        </Stack>
+            {renderDesktopMenu}
+            {renderMobileMenu}
+            <WishlistDialog open={isWishlistOpen} onClose={() => setWishlistOpen(false)} />
+        </>
     );
 }

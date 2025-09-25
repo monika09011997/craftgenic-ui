@@ -29,17 +29,25 @@ export const Navigation = () => {
         }
     };
 
-    return (
+       return (
         <Stack
             direction="row"
-            justifyContent="center"
-            spacing={6}
+            spacing={{ xs: 3, md: 6 }}
             sx={{
-                padding: "18px 0",
+                py: "18px",
                 borderBottom: "1px solid #ddd",
-                fontSize: 14,
-                fontWeight: 500,
-                letterSpacing: 1
+                overflowX: 'auto',
+                whiteSpace: 'nowrap',
+
+                // 1. Vertically align all items to fix the misalignment
+                alignItems: "center", 
+
+                // 2. Fix mobile scrolling cutoff by changing justification
+                justifyContent: { xs: 'flex-start', md: 'center' },
+
+                // Hide the scrollbar for a cleaner look
+                '&::-webkit-scrollbar': { display: 'none' },
+                scrollbarWidth: 'none',
             }}
         >
             {navItems.map(item => (
@@ -49,7 +57,9 @@ export const Navigation = () => {
                     sx={{
                         cursor: "pointer",
                         color: selectedNavItem === item ? "#C8A8E9" : "inherit",
-                        fontSize: selectedNavItem === item ? 15 : 14,
+                        fontWeight: 500,
+                        letterSpacing: 1,
+                        fontSize: selectedNavItem === item ? 14 : 13,
                         transition: "color 0.2s, font-size 0.2s",
                         "&:hover": {
                             color: "#C8A8E9",
@@ -61,5 +71,5 @@ export const Navigation = () => {
                 </Stack>
             ))}
         </Stack>
-    )
+    );
 }

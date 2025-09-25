@@ -1,10 +1,10 @@
 import { Box, Button, Grid, Paper, Stack, Typography, Rating, Chip } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { useCallback, useMemo, useState } from 'react';
 import { OptionButton } from "../../../common/components/buttons/OptionButton";
-import { Favorite, FavoriteBorder, ShoppingCart } from "@mui/icons-material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { addItem } from "../../../cart/slice";
 import { ScrollableThumbnails } from "../../../common/components/ScrollableThumbnails";
 import { useCartAnimation } from "../../../home/hooks";
@@ -12,22 +12,17 @@ import { selectIsinWishlist, toggleWishlistItem } from "../../../wishlist/Wishli
 import { useNavigate } from "react-router-dom";
 
 export const ProductOverview = () => {
+  // All your existing state and handlers remain the same
   const selectedProduct = useAppSelector(state => state.product.selectedProduct);
   const [selectedImage, setSelectedImage] = useState(selectedProduct?.imageUrl || '');
   const [selectedSize, setSelectedSize] = useState(selectedProduct?.availableSizes ? selectedProduct.availableSizes[0] : '');
   const [selectedFrame, setSelectedFrame] = useState('No Frame');
-
-  const frameOptions = ['No Frame', 'Gallery Wrap',
-    'Black', 'White', 'Natural Wood'];
-
+  const frameOptions = ['No Frame', 'Gallery Wrap', 'Black', 'White', 'Natural Wood'];
   const dispatch = useAppDispatch();
   const { triggerAnimation } = useCartAnimation();
-    const navigate = useNavigate(); // 3. Initialize the navigate function
-
-
-    const cartItems = useAppSelector(state => state.cart.items); // Assuming your cart slice is named 'cart' and has an 'items' array
+  const navigate = useNavigate();
+  const cartItems = useAppSelector(state => state.cart.items);
   
-  // 4. Check if this specific item configuration is already in the cart
   const isItemInCart = useMemo(() => {
     if (!selectedProduct) return false;
     return cartItems.some(item => 
@@ -37,64 +32,34 @@ export const ProductOverview = () => {
     );
   }, [cartItems, selectedProduct, selectedSize, selectedFrame]);
 
-   // Check if the current product is in the wishlist
   const isInWishlist = useAppSelector(selectIsinWishlist(selectedProduct?.id || ''));
 
-  const handleToggleWishlist = () => {
-    if (selectedProduct) {
-      dispatch(toggleWishlistItem(selectedProduct));
-    }
-  };
-
-
+  const handleToggleWishlist = () => { if (selectedProduct) dispatch(toggleWishlistItem(selectedProduct)); };
   const handleAddToCart = useCallback(() => {
-    if (!selectedProduct) return; // Guard clause
-
-    const itemToAdd = {
-      ...selectedProduct, // Copy all original product properties
-      selectedSize: selectedSize,   // Add the selected size from state
-      selectedFrame: selectedFrame, // Add the selected frame from state
-      // Generate a unique ID for the cart item if size/frame change it
-    }
-
-    // Implement your add to cart logic here
+    if (!selectedProduct) return;
+    const itemToAdd = { ...selectedProduct, selectedSize, selectedFrame };
     dispatch(addItem(itemToAdd));
     triggerAnimation('add-to-cart-button');
-
-  }, [dispatch, selectedFrame, selectedProduct, selectedSize, triggerAnimation]); // The dependency is the product from the state
-
-  // This is the specific logic that the parent component wants to run
-  const handleImageSelect = (imageUrl: string) => {
-    console.log(`Thumbnail clicked: ${imageUrl}`);
-    setSelectedImage(imageUrl);
-  };
-
-    const handleGoToCart = () => {
-    navigate('/shoppingCart'); // Use the path to your shopping cart page
-  };
-
+  }, [dispatch, selectedFrame, selectedProduct, selectedSize, triggerAnimation]);
+  const handleImageSelect = (imageUrl: string) => setSelectedImage(imageUrl);
+  const handleGoToCart = () => navigate('/shoppingCart');
 
   return (
-    <Box sx={{ flexGrow: 1, p: 4, backgroundColor: '#fff' }}>
-      <Grid container spacing={6}>
-        {/* 1. Thumbnail Column */}
-        <Grid width={'40%'} sx={{ xs: 12, sm: 2 }}>
+    <Box sx={{ flexGrow: 1, p: { xs: 2, md: 4 }, backgroundColor: '#fff' }}>
+      {/* This is the container that controls the layout */}
+      <Grid container spacing={{ xs: 3, md: 6 }}>
+        
+        {/* === Image Column === */}
+        {/* It takes full-width on mobile (xs=12) and 5/12 width on desktop (md=5) */}
+        <Grid width={'400px'} spacing={{ xs: 12, md: 5 }}>
           <Stack spacing={2}>
-            {/* Main Image */}
-            <Paper elevation={0} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px', height: 'auto' }}>
+            <Paper elevation={0} sx={{ display: 'flex', justifyContent: 'center' }}>
               <img
                 src={selectedImage}
                 alt={selectedProduct?.name}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '70vh',
-                  objectFit: 'contain',
-                  borderRadius: '8px', // Slightly rounded corners for the main image
-                }}
+                style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px' }}
               />
             </Paper>
-
-            {/* Horizontal Scrollable Thumbnails */}
             {selectedProduct?.imageGallery && selectedProduct.imageGallery.length > 1 && (
               <ScrollableThumbnails
                 imageGallery={selectedProduct.imageGallery}
@@ -106,22 +71,28 @@ export const ProductOverview = () => {
           </Stack>
         </Grid>
 
-        {/* 3. Details Column */}
-        <Grid width={'50%'} sx={{ xs: 12, sm: 6 }}>
+        {/* === Details Column === */}
+        {/* It takes full-width on mobile (xs=12) and 7/12 width on desktop (md=7) */}
+        <Grid width={'700px'} spacing={{ xs: 12, md: 7 }}>
           <Stack spacing={2.5}>
+            {/* ... All your product details ... */}
             <Box>
               <Chip label="10% OFF" size="small" sx={{ mb: 1, color: 'white', bgcolor: 'black' }} />
-              <Typography variant="h4" fontWeight={600}>{selectedProduct?.name}</Typography>
+              <Typography variant="h4" fontWeight={600} sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
+                {selectedProduct?.name}
+              </Typography>
               <Typography variant="body1" color="text.secondary">Type: {selectedProduct?.category}</Typography>
             </Box>
-
-            {selectedProduct?.price &&
+            {selectedProduct?.price && (
               <Stack direction="row" spacing={1} alignItems="center">
-                <Typography variant="h5" color="black" fontWeight={700}>Rs. {selectedProduct?.price.toLocaleString()}</Typography>
-                <Typography variant="h6" color="text.disabled" sx={{ textDecoration: 'line-through' }}>{(selectedProduct?.price * 1.4).toLocaleString()}</Typography>
+                <Typography variant="h5" color="black" fontWeight={700} sx={{ fontSize: { xs: '1.2rem', md: '1.5rem' } }}>
+                    Rs. {selectedProduct?.price.toLocaleString()}
+                </Typography>
+                <Typography variant="h6" color="text.disabled" sx={{ textDecoration: 'line-through', fontSize: { xs: '1.0rem', md: '1.25rem' } }}>
+                    {(selectedProduct?.price * 1.4).toLocaleString()}
+                </Typography>
               </Stack>
-            }
-
+            )}
             <Box>
               <Typography variant="subtitle1" fontWeight={500} gutterBottom>Size (In Inches): {selectedSize}</Typography>
               <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
@@ -130,7 +101,6 @@ export const ProductOverview = () => {
                 ))}
               </Stack>
             </Box>
-
             <Box>
               <Typography variant="subtitle1" fontWeight={500} gutterBottom>Floating Frame: {selectedFrame}</Typography>
               <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
@@ -139,9 +109,7 @@ export const ProductOverview = () => {
                 ))}
               </Stack>
             </Box>
-
             <Typography variant="subtitle1">By <strong>{selectedProduct?.artist}</strong></Typography>
-
             <Stack direction="row" spacing={1} alignItems="center">
               {selectedProduct?.rating && <Rating name="read-only" value={selectedProduct?.rating} precision={0.5} readOnly />}
               <Typography variant="body2" color="text.secondary">(Based on 1,500+ reviews)</Typography>
@@ -152,37 +120,17 @@ export const ProductOverview = () => {
               </Typography>
             </Paper>
           </Stack>
-          <Stack direction="row" spacing={2} mt={3}>
-            <Button 
-            variant="outlined" 
-      startIcon={isInWishlist ? <Favorite /> : <FavoriteBorder />}
-            onClick={handleToggleWishlist} 
-            sx={{ 
-              width: '40%', 
-              py: 1.5, 
-              borderColor: '#000', 
-              color: '#000', 
-              '&:hover': { backgroundColor: '#f0f0f0', borderColor: '#333' }
-              }}>
-      {isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={3}>
+            <Button variant="outlined" startIcon={isInWishlist ? <Favorite /> : <FavoriteBorder />} onClick={handleToggleWishlist} sx={{ width: '100%', py: 1.5, borderColor: '#000', color: '#000' }}>
+              {isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
             </Button>
             {isItemInCart ? (
-              <Button
-                variant="outlined"
-                startIcon={<ShoppingCart />}
-                onClick={handleGoToCart}
-                sx={{ width: '80%', py: 1.5, borderColor: '#000', color: '#000', '&:hover': { backgroundColor: '#f0f0f0' } }}
-              >
+              <Button variant="outlined" startIcon={<ShoppingCartCheckoutIcon />} onClick={handleGoToCart} sx={{ width: '100%', py: 1.5, borderColor: '#000', color: '#000' }}>
                 Go to Cart
               </Button>
             ) : (
-              <Button
-                id="add-to-cart-button"
-                variant="contained"
-                startIcon={<AddShoppingCartIcon />}
-                onClick={handleAddToCart}
-                sx={{ width: '80%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' } }}
-              >
+              <Button id="add-to-cart-button" variant="contained" startIcon={<AddShoppingCartIcon />} onClick={handleAddToCart} sx={{ width: '100%', py: 1.5, backgroundColor: '#000', '&:hover': { backgroundColor: '#333' } }}>
                 Add to Cart
               </Button>
             )}
@@ -192,4 +140,3 @@ export const ProductOverview = () => {
     </Box>
   );
 };
-;

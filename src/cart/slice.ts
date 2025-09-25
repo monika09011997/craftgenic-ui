@@ -1,10 +1,15 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
-import { ProductListItem } from '../home/types';
 
-import { RootState } from '../store'; // Adjust the import path as necessary
+
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ProductListItem } from '../home/types';
+import { RootState } from '../store';
+
 // Define the shape of a single item in the cart
 export interface CartItem extends ProductListItem {
+  cartItemId: string; // A unique ID for the product + size + frame combination
   quantity: number;
+  selectedSize: string;
+  selectedFrame: string;
 }
 
 // Define the shape of the cart state
@@ -12,56 +17,66 @@ interface CartState {
   items: CartItem[];
 }
 
+// Set the initial state for the cart
 const initialState: CartState = {
   items: [],
 };
 
-export const cartSlice = createSlice({
+const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    // Action to add an item to the cart
-    addItem: (state, action: PayloadAction<ProductListItem>) => {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
+    // Reducer to add an item to the cart
+    addItem: (state, action: PayloadAction<Omit<CartItem, 'cartItemId' | 'quantity'>>) => {
+      const newItem = action.payload;
+      // 1. Create a unique composite ID from the product ID, size, and frame
+      const cartItemId = `${newItem.id}-${newItem.selectedSize}-${newItem.selectedFrame}`;
+
+      // 2. Check if an item with this exact configuration already exists
+      const existingItem = state.items.find(item => item.cartItemId === cartItemId);
+
       if (existingItem) {
-        existingItem.quantity += 1;
+        // 3. If it exists, just increment its quantity
+        existingItem.quantity++;
       } else {
-        state.items.push({ ...action.payload, quantity: 1 });
+        // 4. If it's a new configuration, add it as a new item to the cart
+        state.items.push({
+          ...newItem,
+          cartItemId: cartItemId, // Add the new composite ID
+          quantity: 1,            // Start with a quantity of 1
+        });
       }
     },
-    // Action to completely remove an item
-    removeItem: (state, action: PayloadAction<string>) => { // payload is the item id
-      state.items = state.items.filter(item => item.id !== action.payload);
+
+    // Reducer to remove an item completely
+    removeItem: (state, action: PayloadAction<{ cartItemId: string }>) => {
+      state.items = state.items.filter(item => item.cartItemId !== action.payload.cartItemId);
     },
-    // Action to increase quantity
-    incrementQuantity: (state, action: PayloadAction<string>) => { // payload is the item id
-      const item = state.items.find(item => item.id === action.payload);
-      if (item) {
-        item.quantity += 1;
+
+    // Reducer to update the quantity of a specific item
+    updateQuantity: (state, action: PayloadAction<{ cartItemId: string; quantity: number }>) => {
+      const { cartItemId, quantity } = action.payload;
+      const itemToUpdate = state.items.find(item => item.cartItemId === cartItemId);
+
+      if (itemToUpdate) {
+        if (quantity > 0) {
+          itemToUpdate.quantity = quantity;
+        } else {
+          // If quantity is 0 or less, remove the item
+          state.items = state.items.filter(item => item.cartItemId !== cartItemId);
+        }
       }
     },
-    // Action to decrease quantity
-    decrementQuantity: (state, action: PayloadAction<string>) => { // payload is the item id
-      const item = state.items.find(item => item.id === action.payload);
-      if (item && item.quantity > 1) {
-        item.quantity -= 1;
-      } else {
-        // If quantity is 1, decrementing removes the item
-        state.items = state.items.filter(item => item.id !== action.payload);
-      }
-    },
-    clearCart: (state) => {
+        clearCart: (state) => {
     state.items = [];
   },
   },
 });
 
-// Export the actions
-export const { addItem, removeItem, incrementQuantity, decrementQuantity, clearCart } = cartSlice.actions;
+export const { addItem, removeItem, updateQuantity, clearCart } = cartSlice.actions;
 
-// --- Selectors ---
-// Selectors are used to efficiently get data from the store
 export const selectCartItems = (state: RootState) => state.cart.items;
+
 
 export const selectCartTotal = createSelector(
   selectCartItems,
@@ -72,6 +87,4 @@ export const selectCartItemCount = createSelector(
   selectCartItems,
   (items) => items.reduce((count, item) => count + item.quantity, 0)
 );
-
-
 export default cartSlice.reducer;
