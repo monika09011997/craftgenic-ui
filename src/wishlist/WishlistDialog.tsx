@@ -7,7 +7,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { selectWishlistItems, toggleWishlistItem } from './WishlistSlice';
 import { ProductListItem } from '../home/types';
-import { addItem } from '../cart/slice';
+import { setSelectProduct } from '../common/productSlice';
 
 interface WishlistDialogProps {
   open: boolean;
@@ -19,16 +19,20 @@ export const WishlistDialog = ({ open, onClose }: WishlistDialogProps) => {
   const navigate = useNavigate();
   const wishlistItems = useAppSelector(selectWishlistItems);
 
-  const handleMoveToCart = (product: ProductListItem) => {
-    dispatch(addItem(product)); // Add to cart
-    dispatch(toggleWishlistItem(product)); // Remove from wishlist
-  };
-
-  const handleNavigate = (product: ProductListItem) => {
-    // You might need to dispatch setSelectProduct here if your overview page depends on it
+  // This function now handles all navigation from the dialog
+  const handleNavigateToProduct = (product: ProductListItem) => {
+    // 1. Dispatch the product to the Redux store so the overview page knows what to display
+    dispatch(setSelectProduct(product));
+        dispatch(toggleWishlistItem(product)); // Remove from wishlist
+    // 2. Navigate to the product's detail page
     navigate(`/product/${btoa(product.id)}`);
     onClose(); // Close the dialog after navigating
   };
+
+  const handleRemoveFromWishlist = (product: ProductListItem) => {
+    dispatch(toggleWishlistItem(product));
+  };
+
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -43,18 +47,20 @@ export const WishlistDialog = ({ open, onClose }: WishlistDialogProps) => {
                   src={item.imageUrl}
                   alt={item.name}
                   sx={{ width: 80, height: 80, borderRadius: 1, cursor: 'pointer' }}
-                  onClick={() => handleNavigate(item)}
+                  onClick={() => handleNavigateToProduct(item)}
                 />
-                <Stack flexGrow={1} onClick={() => handleNavigate(item)} sx={{cursor: 'pointer'}}>
+                <Stack flexGrow={1} onClick={() => handleNavigateToProduct(item)} sx={{cursor: 'pointer'}}>
                   <Typography fontWeight={600}>{item.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     Rs. {item.price.toLocaleString()}
                   </Typography>
                 </Stack>
-                <IconButton title="Move to Cart" onClick={() => handleMoveToCart(item)}>
+                
+                {/* 3. This button now navigates the user to select options */}
+                <IconButton title="Select Options to Add" onClick={() => handleNavigateToProduct(item)}>
                   <AddShoppingCartIcon />
                 </IconButton>
-                <IconButton title="Remove from Wishlist" onClick={() => dispatch(toggleWishlistItem(item))}>
+                <IconButton title="Remove from Wishlist" onClick={() => handleRemoveFromWishlist(item)}>
                   <DeleteOutlineIcon />
                 </IconButton>
               </Stack>

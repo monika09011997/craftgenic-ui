@@ -35,13 +35,16 @@ export const ProductOverview = () => {
   const isInWishlist = useAppSelector(selectIsinWishlist(selectedProduct?.id || ''));
 
   const handleToggleWishlist = () => { if (selectedProduct) dispatch(toggleWishlistItem(selectedProduct)); };
+  
   const handleAddToCart = useCallback(() => {
     if (!selectedProduct) return;
     const itemToAdd = { ...selectedProduct, selectedSize, selectedFrame };
     dispatch(addItem(itemToAdd));
     triggerAnimation('add-to-cart-button');
   }, [dispatch, selectedFrame, selectedProduct, selectedSize, triggerAnimation]);
+
   const handleImageSelect = (imageUrl: string) => setSelectedImage(imageUrl);
+
   const handleGoToCart = () => navigate('/shoppingCart');
 
   return (
