@@ -5,9 +5,20 @@ import { Navigation } from "../../common/components/Navigation";
 import { HomeProductCatalog } from "./HomeProductCatalog";
 import { Footer } from "../../common/components/Footer";
 import { OfferBanner } from "../../common/components/OfferBanner";
+import { useAppSelector } from "../../hooks";
+import { selectSelectedNavItem } from "../../common/productSlice";
+import { useMemo } from "react";
+import { ComingSoonPage } from "../../common/components/ComingSoonPage";
 
 export const Home = () => {
+  const selectedNavItem = useAppSelector(selectSelectedNavItem);
 
+  const showLaunchPage = useMemo(() => {
+    if(selectedNavItem === 'HOME DECOR' || selectedNavItem === 'ART PRINTS') {
+      return true;
+    }
+  }, [selectedNavItem]);
+  
   return (
     <Stack>
       <OfferBanner />
@@ -46,7 +57,9 @@ export const Home = () => {
       </Stack>
       
       <Stack alignContent={"center"} justifyContent="center" sx={{ padding: 3 }}>
-        <HomeProductCatalog />
+        {showLaunchPage ? (
+          <ComingSoonPage />
+        ):         <HomeProductCatalog />}
       </Stack>
       
       <Stack>

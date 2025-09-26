@@ -32,6 +32,9 @@ export const HomeProductCatalog = () => {
     if (selectedNavItem === 'TEXTURED ART') {
       return productList.filter(product => product.category === 'Textured Art');
     }
+    if (selectedNavItem === 'BEST SELLER') {
+            return productList.filter(product => {if(product.rating)return product.rating > 4.5 });
+    }
 
     // As a fallback, return the full list or an empty array
     return productList;

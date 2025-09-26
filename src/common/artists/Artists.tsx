@@ -8,52 +8,49 @@ import { ScrollableThumbnails } from "../components/ScrollableThumbnails";
 const artist = {
   name: 'Monika Kumari',
   tagline: 'Abstract Expressionist',
-  bio: `By day, Monika is a software engineer, building the digital world with code and logic. By night, she is an abstract artist, deconstructing it with texture and intuition. Her work explores the intersection of two seemingly opposite worlds, creating tactile, visceral pieces that bridge the gap between the structured and the spontaneous.
-  She creates dynamic compositions that invite viewers to interpret their own meanings.
+bio: `By day, Monika is a software engineer, building the digital world with code and logic. By night, she is an abstract artist, deconstructing it with texture and intuition. Her work explores the intersection of two seemingly opposite worlds, creating tactile, visceral pieces that bridge the gap between the structured and the spontaneous.
+She creates dynamic compositions that invite viewers to interpret their own meanings.
 Her work has been exhibited in galleries and art fairs, She draws inspiration from nature, human experiences, and the complexities of modern life, translating these themes into bold visual statements.
-In addition to her studio practice, She believes in the transformative power of art and its ability to connect people across diverse backgrounds.`,
-  imageUrl: "/images/artist_monika.jpeg", // URL to a portrait of the artist
+In addition to her studio practice, She believes in the transformative power of art and its ability to connect people across diverse backgrounds.`,  imageUrl: "/images/artist_monika.jpeg",
   social: {
     instagram: 'https://instagram.com/dorothyfagan',
     linkedIn: 'https://www.linkedin.com/in/monika-kumari-113762168/',
   }
 };
 
-// --- Main Artist Page Component ---
 export const Artists = () => {
   const { productList } = useFetchProductList();
 
-const featuredWorks = useMemo(() => {
-  // If there's no product list, return an empty array
-  if (!productList) {
-    return [];
-  }
-  
-  // This logic now only runs when productList changes
-  return productList.map(product => ({
-    id: product.id,
-    title: product.name,
-    imageUrl: product.imageUrl,
-  }));
-}, [productList]); // 2. Add productList as a dependency
+  const featuredWorks = useMemo(() => {
+    if (!productList) return [];
+    return productList.map(product => ({
+      id: product.id,
+      title: product.name,
+      imageUrl: product.imageUrl,
+    }));
+  }, [productList]);
 
   return (
-    <Box sx={{ flexGrow: 1, p: 4 }}>
-      <Grid container spacing={5}>
-        {/* Left Column: Artist Portrait & Socials */}
-        <Grid width={'30%'} textAlign="center">
+    // 3. Add responsive padding to the main container
+    <Box sx={{ flexGrow: 1, p: { xs: 1, md: 4 } }}>
+      <Grid container spacing={{ xs: 4, md: 5 }}>
+        
+        {/* 1. Responsive Grid Layout: Left Column */}
+        {/* This column stacks on mobile (xs=12) and is side-by-side on desktop (md=4) */}
+        <Grid spacing={{ xs: 12, md: 4 }} textAlign="center">
           <Stack alignItems="center" spacing={2}>
             <Avatar
               alt={artist.name}
               src={artist.imageUrl}
               sx={{ 
-                width: 250,
-                height: 250,
+                // 2. Make the Avatar size responsive
+                width: { xs: 180, md: 250 },
+                height: { xs: 180, md: 250 },
                 border: '4px solid',
                 borderColor: 'black',
-                '& img': { // Target the img element inside the Avatar
-                  objectFit: 'cover', // This will crop the image to fill the circle
-                  objectPosition: 'top', // Ensures the center of the image is visible
+                '& img': {
+                  objectFit: 'cover',
+                  objectPosition: 'top',
                 },
               }}
             />
@@ -63,18 +60,19 @@ const featuredWorks = useMemo(() => {
               <IconButton component={Link} href={artist.social.instagram} target="_blank" aria-label="instagram">
                 <InstagramIcon />
               </IconButton>
-              <IconButton component={Link} href={artist.social.linkedIn} target="_blank" aria-label="twitter">
+              <IconButton component={Link} href={artist.social.linkedIn} target="_blank" aria-label="linkedin">
                 <LinkedIn />
               </IconButton>
             </Stack>
           </Stack>
         </Grid>
 
-        {/* Right Column: Bio & Featured Works */}
-        <Grid width={'60%'}>
+        {/* 1. Responsive Grid Layout: Right Column */}
+        {/* This column stacks on mobile (xs=12) and is side-by-side on desktop (md=8) */}
+        <Grid width={'800px'} spacing={{ xs: 12, md: 8 }}>
           <Stack spacing={4}>
             <Box>
-              <Typography variant="h4" fontWeight={700} gutterBottom>
+              <Typography variant="h4" fontWeight={700} gutterBottom sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                 About the Artist
               </Typography>
               <Typography variant="body1" sx={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}>
@@ -82,24 +80,13 @@ const featuredWorks = useMemo(() => {
               </Typography>
             </Box>
             <Box>
-              <Typography variant="h5" fontWeight={600} gutterBottom>
+              <Typography variant="h5" fontWeight={600} gutterBottom sx={{ fontSize: { xs: '1.5rem', md: '1.75rem' } }}>
                 Featured Works
               </Typography>
-              <Grid container spacing={2}>
-                <ScrollableThumbnails
-                  imageGallery={featuredWorks.map(work => work.imageUrl)}
-                  canClick={false} />
-                {/* {featuredWorks?.map(work => (
-                  <Grid width={'30%'} key={work.title}>
-                    <Paper elevation={2} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-                       <img src={work.imageUrl} alt={work.title} style={{ width: '100%', display: 'block' }} />
-                       <Typography variant="caption" sx={{ p: 1, display: 'block', textAlign: 'center' }}>
-                         {work.title}
-                       </Typography>
-                    </Paper>
-                  </Grid>
-                ))} */}
-              </Grid>
+              <ScrollableThumbnails
+                imageGallery={featuredWorks.map(work => work.imageUrl)}
+                canClick={false} 
+              />
             </Box>
           </Stack>
         </Grid>

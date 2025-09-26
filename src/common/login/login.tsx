@@ -48,7 +48,7 @@ export const LoginPage = () => {
 
     verifyOtp({ identifier, otp }, {
       onSuccess: (response) => {
-        enqueueSnackbar('Login successful!', { variant: 'success' });
+        enqueueSnackbar(`Welcome ${response.user.name} `, { variant: 'success' });
         navigate('/home'); // Or wherever you want to go after login
     dispatch(setCurrentUser(response.user));
       },

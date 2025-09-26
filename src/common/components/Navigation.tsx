@@ -26,6 +26,7 @@ export const Navigation = () => {
         } else if (item === 'KNOW YOUR ARTISTS') {
             navigate('/artists');
         } else if (item === 'BEST SELLER') {
+                navigate('/home');
         }
     };
 
